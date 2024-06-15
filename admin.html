@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Admin - Perpustakaan</title>
+    <style>
+      .bg-gold {
+        background-color: #d4af37;
+      }
+      .text-gold {
+        color: #d4af37;
+      }
+      .loader {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <header class="bg-black shadow">
+      <div class="container mx-auto px-4 py-4 flex justify-between">
+        <a href="index.html" class="text-gold font-semibold">Home</a>
+        <div>
+          <span class="text-gold font-semibold mx-2">Welcome, Admin</span>
+          <a href="#" onclick="logout()" class="text-gold font-semibold mx-2"
+            >Logout</a
+          >
+        </div>
+      </div>
+    </header>
+    <main class="flex flex-col items-center justify-start min-h-screen py-10">
+      <div class="w-full max-w-4xl bg-white p-6 rounded shadow-md mb-4">
+        <div class="flex justify-between items-center mb-4">
+          <button
+            class="bg-gold text-black px-4 py-2 rounded"
+            onclick="window.location.href='add_buku.html'"
+          >
+            Add Buku
+          </button>
+          <input
+            type="text"
+            id="search-input"
+            class="p-2 border border-gray-300 rounded"
+            placeholder="Cari judul, pengarang, ISBN , publisher ..."
+            oninput="searchBooks()"
+          />
+        </div>
+        <div id="loading" class="loader" style="display: none"></div>
+        <div id="results-container" class="flex flex-col"></div>
+        <div id="pagination" class="flex justify-center mt-4"></div>
+      </div>
+    </main>
+
+    <script>
+      async function logout() {
+        try {
+          const response = await fetch(
+            "http://api-sima.ideasophia.my.id/auth/logout/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to logout");
+          }
+
+          localStorage.removeItem("nama");
+          localStorage.removeItem("role");
+          localStorage.removeItem("token");
+          localStorage.removeItem("no_anggota");
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error("Error during logout", error);
+          alert("Error during logout");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        searchBooks();
+      });
+
+      async function searchBooks(page = 1) {
+        const query = document.getElementById("search-input").value;
+        const loading = document.getElementById("loading");
+        loading.style.display = "block"; // Tampilkan loading spinner
+
+        try {
+          const response = await fetch(
+            `http://api-sima.ideasophia.my.id/api/main_page/booklist/?page=${page}&search=${query}`
+          );
+          const data = await response.json();
+          displayResults(data.results);
+          setupPagination(data.count, page);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          loading.style.display = "none"; // Sembunyikan loading spinner setelah selesai
+        }
+      }
+
+      function displayResults(books) {
+        const resultsContainer = document.getElementById("results-container");
+        resultsContainer.innerHTML = "";
+
+        if (books.length === 0) {
+          resultsContainer.innerHTML =
+            "<p class='text-center text-gray-500'>No results found</p>";
+          return;
+        }
+
+        books.forEach((book) => {
+          const bookDiv = document.createElement("div");
+          bookDiv.classList.add(
+            "flex",
+            "items-start",
+            "border",
+            "p-4",
+            "mb-4",
+            "bg-white",
+            "shadow-md",
+            "w-full"
+          );
+          bookDiv.innerHTML = `
+            <img src="${book.url_image}" alt="${book.title}" class="w-24 h-32 object-cover mr-4">
+            <div class="flex flex-col justify-between w-full">
+              <h2 class="text-xl font-bold">${book.title}</h2>
+              <p class="text-gray-700">Pengarang: ${book.author}</p>
+              <p class="text-gray-700">Penerbit: ${book.publisher}</p>
+              <div class="flex space-x-2 mt-2">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="updateBook(${book.id})">Update</button>
+                <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="deleteBook(${book.id})">Delete</button>
+              </div>
+            </div>
+          `;
+          resultsContainer.appendChild(bookDiv);
+        });
+      }
+
+      function setupPagination(totalCount, currentPage) {
+        const paginationDiv = document.getElementById("pagination");
+        paginationDiv.innerHTML = "";
+        const totalPages = Math.ceil(totalCount / 10);
+        for (let i = 1; i <= totalPages; i++) {
+          const pageButton = document.createElement("button");
+          pageButton.classList.add(
+            "px-4",
+            "py-2",
+            "mx-1",
+            "border",
+            "rounded",
+            i === currentPage ? "bg-gold" : "bg-white"
+          );
+          pageButton.textContent = i;
+          pageButton.onclick = () => searchBooks(i);
+          paginationDiv.appendChild(pageButton);
+        }
+      }
+
+      function updateBook(id) {
+        window.location.href = `update_buku.html?id=${id}`;
+      }
+
+      async function deleteBook(id) {
+        const confirmation = confirm(
+          "Are you sure you want to delete this book?"
+        );
+        if (!confirmation) return;
+
+        try {
+          const response = await fetch(
+            `http://api-sima.ideasophia.my.id/api/main_page/booklist/${id}/`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to delete book");
+          }
+
+          alert("Book deleted successfully");
+          searchBooks();
+        } catch (error) {
+          console.error("Error deleting book", error);
+          alert("Error deleting book");
+        }
+      }
+    </script>
+  </body>
+</html>

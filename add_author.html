@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Add Author</title>
+    <style>
+      .bg-gold {
+        background-color: #d4af37;
+      }
+      .text-gold {
+        color: #d4af37;
+      }
+      .loader {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <header class="bg-black shadow">
+      <div class="container mx-auto px-4 py-4 flex justify-end">
+        <a href="index.html" class="text-gold font-semibold mx-2">Home</a>
+        <a href="admin.html" class="text-gold font-semibold mx-2">Admin</a>
+      </div>
+    </header>
+    <main class="flex flex-col items-center justify-center min-h-screen py-10">
+      <div class="w-full max-w-lg bg-white p-6 rounded shadow-md">
+        <h1 class="text-3xl font-bold mb-4 text-center">Add Author</h1>
+        <form id="add-author-form" class="space-y-4">
+          <div>
+            <label for="name" class="block">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="code" class="block">Code</label>
+            <input
+              type="text"
+              id="code"
+              name="code"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <button type="submit" class="w-full bg-gold text-black p-2 rounded">
+              Add Author
+            </button>
+          </div>
+        </form>
+      </div>
+      <div
+        id="loading"
+        class="loader"
+        style="display: none; margin-top: 10px"
+      ></div>
+    </main>
+
+    <script>
+      document
+        .getElementById("add-author-form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const loading = document.getElementById("loading");
+          loading.style.display = "block"; // Show loading spinner
+
+          const formData = new FormData(event.target);
+          const data = Object.fromEntries(formData.entries());
+
+          const token = localStorage.getItem("token");
+
+          try {
+            const response = await fetch(
+              "http://api-sima.ideasophia.my.id/api/main_page/authorcrud/",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `${token}`,
+                },
+                body: JSON.stringify(data),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to add author");
+            }
+
+            const result = await response.json();
+            console.log("Author added successfully", result);
+            alert("Author added successfully");
+
+            window.location.href = "add_buku.html"; // Redirect to add_buku.html
+          } catch (error) {
+            console.error("Error adding author", error);
+            alert("Error adding author");
+          } finally {
+            loading.style.display = "none"; // Hide loading spinner
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Perpustakaan</title>
+    <style>
+      .bg-gold {
+        background-color: #d4af37;
+      }
+      .text-gold {
+        color: #d4af37;
+      }
+      .loader {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <header class="bg-black shadow">
+      <div
+        class="container mx-auto px-4 py-4 flex justify-end"
+        id="header-menu"
+      >
+        <a href="login.html" class="text-gold font-semibold mx-2">Login</a>
+        <a href="signup.html" class="text-gold font-semibold mx-2">Sign Up</a>
+      </div>
+    </header>
+    <main class="flex flex-col items-center justify-center min-h-screen py-10">
+      <div class="text-center w-full px-4">
+        <img src="logo.png" alt="Logo" class="mx-auto mb-4 w-24 h-24" />
+        <!-- Ganti "logo.png" dengan path logo Anda -->
+        <h1 class="text-5xl font-bold mb-1 text-black">SIMA LIBRARY</h1>
+        <h6 class="italic text-gray-500 mb-6">Sumber Ilmu untuk masyarakat</h6>
+        <div class="flex justify-center w-full mb-4">
+          <input
+            type="text"
+            id="search-input"
+            class="w-full max-w-4xl p-3 border border-gray-300 rounded-l-md"
+            placeholder="Cari judul, pengarang, ISBN , publisher ..."
+          />
+          <button
+            class="bg-gold text-black px-6 py-3 rounded-r-md"
+            onclick="searchBooks()"
+          >
+            Search
+          </button>
+        </div>
+        <div id="loading" class="loader" style="display: none"></div>
+        <div
+          id="results-container"
+          class="w-full max-w-4xl mx-auto flex flex-col items-center"
+        ></div>
+        <div id="pagination" class="flex justify-center mt-4"></div>
+      </div>
+    </main>
+
+    <script>
+      function updateHeader() {
+        const headerMenu = document.getElementById("header-menu");
+        const name = localStorage.getItem("nama");
+        const role = localStorage.getItem("role");
+
+        if (name) {
+          headerMenu.innerHTML = `
+            <span class="text-gold font-semibold mx-2">Welcome, ${name}</span>
+            <a href="#" onclick="logout()" class="text-gold font-semibold mx-2">Logout</a>
+          `;
+          if (role == 1) {
+            headerMenu.innerHTML += `
+              <a href="admin.html" class="text-gold font-semibold mx-2">Admin</a>
+            `;
+          }
+        }
+      }
+
+      async function logout() {
+        try {
+          const response = await fetch(
+            "http://api-sima.ideasophia.my.id/api/auth/logout/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to logout");
+          }
+
+          localStorage.removeItem("nama");
+          localStorage.removeItem("role");
+          localStorage.removeItem("token");
+          localStorage.removeItem("no_anggota");
+          window.location.reload();
+        } catch (error) {
+          console.error("Error during logout", error);
+          alert("Error during logout");
+        }
+      }
+
+      async function searchBooks(page = 1) {
+        const query = document.getElementById("search-input").value;
+        const loading = document.getElementById("loading");
+        loading.style.display = "block"; // Tampilkan loading spinner
+
+        try {
+          const response = await fetch(
+            `http://api-sima.ideasophia.my.id/api/main_page/booklist/?page=${page}&search=${query}`
+          );
+          const data = await response.json();
+          displayResults(data.results);
+          setupPagination(data.count, page);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          loading.style.display = "none"; // Sembunyikan loading spinner setelah selesai
+        }
+      }
+
+      function displayResults(books) {
+        const resultsContainer = document.getElementById("results-container");
+        resultsContainer.innerHTML = "";
+
+        if (books.length === 0) {
+          resultsContainer.innerHTML =
+            "<p class='text-center text-gray-500'>No results found</p>";
+          return;
+        }
+
+        books.forEach((book) => {
+          const bookDiv = document.createElement("div");
+          bookDiv.classList.add(
+            "flex",
+            "items-start",
+            "border",
+            "p-4",
+            "mb-4",
+            "bg-white",
+            "shadow-md",
+            "w-full",
+            "cursor-pointer"
+          );
+          bookDiv.setAttribute("data-id", book.id);
+          bookDiv.addEventListener("click", () => {
+            window.location.href = `book_detail.html?id=${book.id}`;
+          });
+          bookDiv.innerHTML = `
+            <img src="${book.url_image}" alt="${book.title}" class="w-24 h-32 object-cover mr-4">
+            <div class="flex flex-col justify-between w-full">
+              <h2 class="text-xl font-bold">${book.title}</h2>
+              <p class="text-gray-700">Pengarang: ${book.author}</p>
+              <p class="text-gray-700">Penerbit: ${book.publisher}</p>
+            </div>
+          `;
+          resultsContainer.appendChild(bookDiv);
+        });
+      }
+
+      function setupPagination(totalCount, currentPage) {
+        const paginationDiv = document.getElementById("pagination");
+        paginationDiv.innerHTML = "";
+        const totalPages = Math.ceil(totalCount / 10);
+        for (let i = 1; i <= totalPages; i++) {
+          const pageButton = document.createElement("button");
+          pageButton.classList.add(
+            "px-4",
+            "py-2",
+            "mx-1",
+            "border",
+            "rounded",
+            i === currentPage ? "bg-gold" : "bg-white"
+          );
+          pageButton.textContent = i;
+          pageButton.onclick = () => searchBooks(i);
+          paginationDiv.appendChild(pageButton);
+        }
+      }
+
+      // Update header on page load
+      document.addEventListener("DOMContentLoaded", updateHeader);
+    </script>
+  </body>
+</html>

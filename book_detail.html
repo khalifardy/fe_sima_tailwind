@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Detail Buku</title>
+    <style>
+      .bg-gold {
+        background-color: #d4af37;
+      }
+      .text-gold {
+        color: #d4af37;
+      }
+      .loader {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .star {
+        color: #ffd700; /* Gold color */
+        font-size: 1.5rem;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <header class="bg-black shadow">
+      <div
+        class="container mx-auto px-4 py-4 flex justify-end"
+        id="header-menu"
+      >
+        <a href="index.html" class="text-gold font-semibold mx-2">Home</a>
+        <a href="login.html" class="text-gold font-semibold mx-2">Login</a>
+        <a href="signup.html" class="text-gold font-semibold mx-2">Sign Up</a>
+      </div>
+    </header>
+    <main class="flex flex-col items-center justify-center min-h-screen py-10">
+      <div id="loading" class="loader" style="display: none"></div>
+      <div
+        id="book-details"
+        class="text-center w-full px-4 max-w-4xl bg-white p-6 rounded shadow-md"
+      >
+        <!-- Konten detail buku akan dimasukkan di sini -->
+      </div>
+    </main>
+
+    <script>
+      function updateHeader() {
+        const headerMenu = document.getElementById("header-menu");
+        const name = localStorage.getItem("nama");
+
+        if (name) {
+          headerMenu.innerHTML = `
+            <a href="index.html" class="text-gold font-semibold mx-2">Home</a>
+            <span class="text-gold font-semibold mx-2">Welcome, ${name}</span>
+            <button onclick="logout()" class="text-gold font-semibold mx-2">Logout</button>
+          `;
+        }
+      }
+
+      function logout() {
+        fetch("http://api-sima.ideasophia.my.id/api/auth/logout/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              localStorage.clear();
+              location.reload();
+            } else {
+              alert("Logout failed");
+            }
+          })
+          .catch((error) => console.error("Error during logout", error));
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        updateHeader();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get("id");
+        const loading = document.getElementById("loading");
+        const bookDetails = document.getElementById("book-details");
+
+        loading.style.display = "block"; // Tampilkan loading spinner
+
+        try {
+          const response = await fetch(
+            "http://api-sima.ideasophia.my.id/api/main_page/booklist/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ id: bookId }),
+            }
+          );
+
+          const data = await response.json();
+          displayBookDetails(data);
+        } catch (error) {
+          console.error("Error fetching book details:", error);
+          bookDetails.innerHTML =
+            '<p class="text-red-500">Error fetching book details. Please try again later.</p>';
+        } finally {
+          loading.style.display = "none"; // Sembunyikan loading spinner setelah selesai
+        }
+      });
+
+      function displayBookDetails(data) {
+        const book = data.book;
+        const ratingStars = generateStars(data.rating);
+        const bookDetails = document.getElementById("book-details");
+
+        let downloadButton = `<a href="http://api-sima.ideasophia.my.id${book.url_buku}" class="bg-gold text-black px-6 py-3 rounded-md">Unduh Buku</a>`;
+        const userRole = localStorage.getItem("role");
+        const isLoggedIn = !!localStorage.getItem("token");
+
+        if (!isLoggedIn) {
+          downloadButton = `<button class="bg-gray-400 text-black px-6 py-3 rounded-md cursor-not-allowed" disabled>Unduh Buku</button>
+                            <p class="text-red-500 mt-2">Silakan login atau sign up terlebih dahulu</p>`;
+        } else if (book.premium && userRole != 1 && userRole != 3) {
+          downloadButton = `<button class="bg-gray-400 text-black px-6 py-3 rounded-md cursor-not-allowed" disabled>Unduh Buku</button>
+                            <p class="text-red-500 mt-2">Akun Anda bukan akun premium</p>`;
+        }
+
+        bookDetails.innerHTML = `
+          <h1 class="text-5xl font-bold mb-4">${book.title}</h1>
+          <img src="http://api-sima.ideasophia.my.id${book.url_image}" alt="${book.title}" class="mx-auto mb-4 w-48 h-64 object-cover">
+          <p class="text-xl mb-2"><strong>Pengarang:</strong> ${book.author}</p>
+          <p class="text-xl mb-2"><strong>Penerbit:</strong> ${book.publisher}</p>
+          <p class="text-xl mb-2"><strong>Kategori:</strong> ${book.category}</p>
+          <p class="text-xl mb-2"><strong>Sub-Kategori:</strong> ${book.sub_category}</p>
+          <p class="text-xl mb-2"><strong>Rating:</strong> ${data.rating}/5</p>
+          <div class="flex justify-center mb-4">${ratingStars}</div>
+          <p class="text-lg mb-4 text-justify">${data.review}</p>
+          ${downloadButton}
+        `;
+      }
+
+      function generateStars(rating) {
+        const maxStars = 5;
+        let stars = "";
+        for (let i = 0; i < maxStars; i++) {
+          if (i < rating) {
+            stars += '<span class="star">&#9733;</span>'; // Filled star
+          } else {
+            stars += '<span class="star text-gray-300">&#9733;</span>'; // Empty star
+          }
+        }
+        return stars;
+      }
+    </script>
+  </body>
+</html>

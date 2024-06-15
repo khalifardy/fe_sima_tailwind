@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Add Book</title>
+    <style>
+      .bg-gold {
+        background-color: #d4af37;
+      }
+      .text-gold {
+        color: #d4af37;
+      }
+      .loader {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <header class="bg-black shadow">
+      <div class="container mx-auto px-4 py-4 flex justify-end">
+        <a href="index.html" class="text-gold font-semibold mx-2">Home</a>
+        <a href="admin.html" class="text-gold font-semibold mx-2">Admin</a>
+      </div>
+    </header>
+    <main class="flex flex-col items-center justify-center min-h-screen py-10">
+      <div class="w-full max-w-lg bg-white p-6 rounded shadow-md">
+        <h1 class="text-3xl font-bold mb-4 text-center">Add Book</h1>
+        <form
+          id="add-book-form"
+          class="space-y-4"
+          enctype="multipart/form-data"
+        >
+          <div>
+            <label for="title" class="block">Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="code" class="block">Code</label>
+            <input
+              type="text"
+              id="code"
+              name="code"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div class="flex space-x-4 items-center">
+            <div class="w-full">
+              <label for="author" class="block">Author</label>
+              <select
+                id="author"
+                name="author"
+                class="w-full p-2 border border-gray-300 rounded"
+              ></select>
+            </div>
+            <a href="add_author.html" class="bg-gold text-black p-2 rounded"
+              >+</a
+            >
+          </div>
+          <div>
+            <label for="isbn" class="block">ISBN</label>
+            <input
+              type="text"
+              id="isbn"
+              name="isbn"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div class="flex space-x-4 items-center">
+            <div class="w-full">
+              <label for="publisher" class="block">Publisher</label>
+              <select
+                id="publisher"
+                name="publisher"
+                class="w-full p-2 border border-gray-300 rounded"
+              ></select>
+            </div>
+            <a href="add_publisher.html" class="bg-gold text-black p-2 rounded"
+              >+</a
+            >
+          </div>
+          <div>
+            <label for="category" class="block">Category</label>
+            <select
+              id="category"
+              name="category"
+              class="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="Fiksi">Fiksi</option>
+              <option value="Non Fiksi">Non-Fiksi</option>
+            </select>
+          </div>
+          <div>
+            <label for="sub_category" class="block">Sub Category</label>
+            <select
+              id="sub_category"
+              name="sub_category"
+              class="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="Novel">Novel</option>
+              <option value="Komik">Komik</option>
+              <option value="Sains">Sains</option>
+              <option value="Humaniora">Humaniora</option>
+              <option value="Biografi">Biografi</option>
+              <option value="Pendidikan">Pendidikan</option>
+              <option value="Agama">Agama</option>
+              <option value="Psikologi">Psikologi</option>
+              <option value="Pertanian">Pertanian</option>
+              <option value="Journal">Journal</option>
+            </select>
+          </div>
+          <div>
+            <label for="file_buku" class="block">File Buku</label>
+            <input
+              type="file"
+              id="buku"
+              name="buku"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="image_buku" class="block">Image Buku</label>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="stok" class="block">Stok</label>
+            <input
+              type="number"
+              id="stok"
+              name="stok"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="rating" class="block">Rating</label>
+            <input
+              type="number"
+              id="rating"
+              name="rating"
+              min="1"
+              max="5"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label class="block">Premium</label>
+            <div class="flex space-x-4">
+              <label
+                ><input type="radio" name="premium" value="True" /> True</label
+              >
+              <label
+                ><input type="radio" name="premium" value="False" />
+                False</label
+              >
+            </div>
+          </div>
+          <div>
+            <label for="sinopsis" class="block">Sinopsis</label>
+            <textarea
+              id="sinopsis"
+              name="sinopsis"
+              class="w-full p-2 border border-gray-300 rounded"
+            ></textarea>
+          </div>
+          <div>
+            <button type="submit" class="w-full bg-gold text-black p-2 rounded">
+              Add Book
+            </button>
+          </div>
+        </form>
+      </div>
+      <div
+        id="loading"
+        class="loader"
+        style="display: none; margin-top: 10px"
+      ></div>
+    </main>
+
+    <script>
+      async function fetchAuthors() {
+        try {
+          const response = await fetch(
+            "http://api-sima.ideasophia.my.id/api/main_page/authorlist/"
+          );
+          const authors = await response.json();
+          const authorSelect = document.getElementById("author");
+          authors.forEach((author) => {
+            const option = document.createElement("option");
+            option.value = author.name;
+            option.text = author.name;
+            authorSelect.add(option);
+          });
+        } catch (error) {
+          console.error("Error fetching authors:", error);
+        }
+      }
+
+      async function fetchPublishers() {
+        try {
+          const response = await fetch(
+            "http://api-sima.ideasophia.my.id/api/main_page/publisherlist/"
+          );
+          const publishers = await response.json();
+          const publisherSelect = document.getElementById("publisher");
+          publishers.forEach((publisher) => {
+            const option = document.createElement("option");
+            option.value = publisher.name;
+            option.text = publisher.name;
+            publisherSelect.add(option);
+          });
+        } catch (error) {
+          console.error("Error fetching publishers:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        await fetchAuthors();
+        await fetchPublishers();
+      });
+
+      document
+        .getElementById("add-book-form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const loading = document.getElementById("loading");
+          loading.style.display = "block"; // Show loading spinner
+
+          const formData = new FormData(event.target);
+
+          const token = localStorage.getItem("token");
+
+          try {
+            const response = await fetch(
+              "http://api-sima.ideasophia.my.id/api/main_page/bookcrud/",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `${token}`,
+                },
+                body: formData,
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to add book");
+            }
+
+            const result = await response.json();
+            console.log("Book added successfully", result);
+            alert("Book added successfully");
+
+            event.target.reset(); // Clear the form
+            window.location.href = "admin.html"; // Redirect to admin page
+          } catch (error) {
+            console.error("Error adding book", error);
+            alert("Error adding book");
+          } finally {
+            loading.style.display = "none"; // Hide loading spinner
+          }
+        });
+    </script>
+  </body>
+</html>

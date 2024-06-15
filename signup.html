@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Sign Up</title>
+    <style>
+      .bg-gold {
+        background-color: #d4af37;
+      }
+      .text-gold {
+        color: #d4af37;
+      }
+      .loader {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <header class="bg-black shadow">
+      <div class="container mx-auto px-4 py-4 flex justify-end">
+        <a href="index.html" class="text-gold font-semibold mx-2">Home</a>
+        <a href="login.html" class="text-gold font-semibold mx-2">Login</a>
+        <a href="signup.html" class="text-gold font-semibold mx-2">Sign Up</a>
+      </div>
+    </header>
+    <main class="flex flex-col items-center justify-center min-h-screen py-10">
+      <div class="w-full max-w-lg bg-white p-6 rounded shadow-md">
+        <h1 class="text-3xl font-bold mb-4 text-center">Sign Up</h1>
+        <form id="signup-form" class="space-y-4">
+          <div class="flex space-x-4">
+            <div class="w-1/2">
+              <label for="first_name" class="block">First Name</label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                class="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div class="w-1/2">
+              <label for="last_name" class="block">Last Name</label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                class="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+          </div>
+          <div>
+            <label for="email" class="block">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="alamat" class="block">Alamat</label>
+            <input
+              type="text"
+              id="alamat"
+              name="alamat"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="mobile_phone" class="block">Mobile Phone</label>
+            <input
+              type="tel"
+              id="mobile_phone"
+              name="mobile_phone"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label class="block">Jenis Kelamin</label>
+            <div class="flex space-x-4">
+              <label
+                ><input type="radio" name="jenis_kelamin" value="Pria" />
+                Pria</label
+              >
+              <label
+                ><input type="radio" name="jenis_kelamin" value="Wanita" />
+                Wanita</label
+              >
+            </div>
+          </div>
+          <div>
+            <label for="pekerjaan" class="block">Pekerjaan</label>
+            <select
+              id="pekerjaan"
+              name="pekerjaan"
+              class="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="ASN">ASN</option>
+              <option value="Swasta">Swasta</option>
+              <option value="Mahasiswa">Mahasiswa</option>
+              <option value="Pelajar">Pelajar</option>
+              <option value="Wiraswasta">Wiraswasta</option>
+              <option value="Pegawai Negara Non Asn">
+                Pegawai Negara Non Asn
+              </option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="username" class="block">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="password" class="block">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <label for="pendidikan" class="block">Pendidikan</label>
+            <select
+              id="pendidikan"
+              name="pendidikan"
+              class="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="TK">TK</option>
+              <option value="SD">SD</option>
+              <option value="SMP">SMP</option>
+              <option value="SMA">SMA</option>
+              <option value="D3">D3</option>
+              <option value="S1">S1</option>
+              <option value="S2">S2</option>
+              <option value="S3">S3</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="tanggal_lahir" class="block">Tanggal Lahir</label>
+            <input
+              type="text"
+              id="tanggal_lahir"
+              name="tanggal_lahir"
+              class="w-full p-2 border border-gray-300 rounded"
+              placeholder="dd-mm-yyyy"
+            />
+          </div>
+          <div>
+            <label for="nip" class="block">NIP</label>
+            <input
+              type="text"
+              id="nip"
+              name="nip"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div>
+            <button type="submit" class="w-full bg-gold text-black p-2 rounded">
+              Sign Up
+            </button>
+          </div>
+        </form>
+      </div>
+      <div
+        id="loading"
+        class="loader"
+        style="display: none; margin-top: 10px"
+      ></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+      flatpickr("#tanggal_lahir", {
+        dateFormat: "d-m-Y",
+      });
+
+      document
+        .getElementById("signup-form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const loading = document.getElementById("loading");
+          loading.style.display = "block"; // Tampilkan loading spinner
+
+          const formData = new FormData(event.target);
+          const data = Object.fromEntries(formData.entries());
+
+          try {
+            const response = await fetch(
+              "http://api-sima.ideasophia.my.id/api/auth/signup/",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to sign up");
+            }
+
+            const result = await response.json();
+            console.log("Sign up successful", result);
+            alert("Sign up successful");
+
+            setTimeout(() => {
+              window.location.href = "index.html";
+            }, 5000);
+          } catch (error) {
+            console.error("Error during sign up", error);
+            alert("Error during sign up");
+          } finally {
+            loading.style.display = "none"; // Sembunyikan loading spinner setelah selesai
+          }
+        });
+    </script>
+  </body>
+</html>
