@@ -91,7 +91,7 @@
       async function logout() {
         try {
           const response = await fetch(
-            "http://api-sima.ideasophia.my.id/api/auth/logout/",
+            "https://api-sima.ideasophia.my.id/api/auth/logout/",
             {
               method: "POST",
               headers: {
@@ -123,7 +123,7 @@
 
         try {
           const response = await fetch(
-            `http://api-sima.ideasophia.my.id/api/main_page/booklist/?page=${page}&search=${query}`
+            `https://api-sima.ideasophia.my.id/api/main_page/booklist/?page=${page}&search=${query}`
           );
           const data = await response.json();
           displayResults(data.results);

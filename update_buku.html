@@ -205,7 +205,7 @@
       async function fetchAuthors() {
         try {
           const response = await fetch(
-            "http://api-sima.ideasophia.my.id/api/main_page/authorlist/"
+            "https://api-sima.ideasophia.my.id/api/main_page/authorlist/"
           );
           const authors = await response.json();
           const authorSelect = document.getElementById("author");
@@ -223,7 +223,7 @@
       async function fetchPublishers() {
         try {
           const response = await fetch(
-            "http://api-sima.ideasophia.my.id/api/main_page/publisherlist/"
+            "https://api-sima.ideasophia.my.id/api/main_page/publisherlist/"
           );
           const publishers = await response.json();
           const publisherSelect = document.getElementById("publisher");
@@ -242,7 +242,7 @@
         const token = localStorage.getItem("token");
         try {
           const response = await fetch(
-            `http://api-sima.ideasophia.my.id/api/main_page/bookcrud/?id=${id}`,
+            `https://api-sima.ideasophia.my.id/api/main_page/bookcrud/?id=${id}`,
             {
               method: "GET",
               headers: {
@@ -306,7 +306,7 @@
 
           try {
             const response = await fetch(
-              `http://api-sima.ideasophia.my.id/api/main_page/bookcrud/`,
+              `https://api-sima.ideasophia.my.id/api/main_page/bookcrud/`,
               {
                 method: "PUT",
                 headers: {
