@@ -69,7 +69,7 @@
       async function logout() {
         try {
           const response = await fetch(
-            "http://api-sima.ideasophia.my.id/auth/logout/",
+            "http://api-sima.ideasophia.my.id/api/auth/logout/",
             {
               method: "POST",
               headers: {
@@ -187,13 +187,14 @@
 
         try {
           const response = await fetch(
-            `http://api-sima.ideasophia.my.id/api/main_page/booklist/${id}/`,
+            `http://api-sima.ideasophia.my.id/api/main_page/bookcrud/`,
             {
               method: "DELETE",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `JWT ${localStorage.getItem("token")}`,
+                Authorization: `${localStorage.getItem("token")}`,
               },
+              body: JSON.stringify({ id: id }),
             }
           );
 
