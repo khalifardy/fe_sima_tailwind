@@ -271,14 +271,14 @@
             }
 
             const result = await response.json();
-            console.log("Book added successfully", result);
-            alert("Book added successfully");
+            console.log(result.msg, result);
+            alert(result.msg);
 
             event.target.reset(); // Clear the form
             window.location.href = "admin.html"; // Redirect to admin page
           } catch (error) {
-            console.error("Error adding book", error);
-            alert("Error adding book");
+            console.error(result.msg, error);
+            alert(result.msg);
           } finally {
             loading.style.display = "none"; // Hide loading spinner
           }
