@@ -70,7 +70,7 @@
       }
 
       function logout() {
-        fetch("https://api-sima.ideasophia.my.id/api/auth/logout/", {
+        fetch("https://api-sima.ideasophia.tech/api/auth/logout/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -99,7 +99,7 @@
 
         try {
           const response = await fetch(
-            "https://api-sima.ideasophia.my.id/api/main_page/booklist/",
+            "https://api-sima.ideasophia.tech/api/main_page/booklist/",
             {
               method: "POST",
               headers: {
@@ -125,7 +125,7 @@
         const ratingStars = generateStars(data.rating);
         const bookDetails = document.getElementById("book-details");
 
-        let downloadButton = `<a href="https://api-sima.ideasophia.my.id${book.url_buku}" class="bg-gold text-black px-6 py-3 rounded-md">Unduh Buku</a>`;
+        let downloadButton = `<a href="https://api-sima.ideasophia.tech${book.url_buku}" class="bg-gold text-black px-6 py-3 rounded-md">Unduh Buku</a>`;
         const userRole = localStorage.getItem("role");
         const isLoggedIn = !!localStorage.getItem("token");
 
@@ -139,7 +139,7 @@
 
         bookDetails.innerHTML = `
           <h1 class="text-5xl font-bold mb-4">${book.title}</h1>
-          <img src="https://api-sima.ideasophia.my.id${book.url_image}" alt="${book.title}" class="mx-auto mb-4 w-48 h-64 object-cover">
+          <img src="https://api-sima.ideasophia.tech${book.url_image}" alt="${book.title}" class="mx-auto mb-4 w-48 h-64 object-cover">
           <p class="text-xl mb-2"><strong>Pengarang:</strong> ${book.author}</p>
           <p class="text-xl mb-2"><strong>Penerbit:</strong> ${book.publisher}</p>
           <p class="text-xl mb-2"><strong>Kategori:</strong> ${book.category}</p>

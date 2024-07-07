@@ -204,7 +204,7 @@
       async function fetchAuthors() {
         try {
           const response = await fetch(
-            "https://api-sima.ideasophia.my.id/api/main_page/authorlist/"
+            "https://api-sima.ideasophia.tech/api/main_page/authorlist/"
           );
           const authors = await response.json();
           const authorSelect = document.getElementById("author");
@@ -222,7 +222,7 @@
       async function fetchPublishers() {
         try {
           const response = await fetch(
-            "https://api-sima.ideasophia.my.id/api/main_page/publisherlist/"
+            "https://api-sima.ideasophia.tech/api/main_page/publisherlist/"
           );
           const publishers = await response.json();
           const publisherSelect = document.getElementById("publisher");
@@ -256,7 +256,7 @@
 
           try {
             const response = await fetch(
-              "https://api-sima.ideasophia.my.id/api/main_page/bookcrud/",
+              "https://api-sima.ideasophia.tech/api/main_page/bookcrud/",
               {
                 method: "POST",
                 headers: {
